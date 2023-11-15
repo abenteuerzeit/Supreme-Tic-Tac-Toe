@@ -16,7 +16,7 @@ class Player:
         best_score = float('-inf') if is_maximizing else float('inf')
         for row in range(Config.GRID["COLUMNS"]):
             for col in range(Config.GRID["COLUMNS"]):
-                if isinstance(board.board[row][col], int):
+                if isinstance(board.cells[row][col], int):
                     board.set_cell(row, col, player_symbol)
                     score = self.minimax(
                         board, depth + 1, not is_maximizing,
@@ -36,7 +36,7 @@ class Player:
 
         for row in range(Config.GRID["COLUMNS"]):
             for col in range(Config.GRID["COLUMNS"]):
-                if isinstance(board.board[row][col], int):
+                if isinstance(board.cells[row][col], int):
                     board.set_cell(row, col, player_symbol)
                     score = self.minimax(board, 0, False, player_symbol)
                     board.set_cell(row, col,
@@ -65,7 +65,7 @@ class HumanPlayer(Player):
     def find_winning_move(self, board, symbol):
         for row in range(Config.GRID["COLUMNS"]):
             for col in range(Config.GRID["COLUMNS"]):
-                if isinstance(board.board[row][col], int):
+                if isinstance(board.cells[row][col], int):
                     board.set_cell(row, col, symbol)
                     if board.check_victory_for(symbol):
                         board.set_cell(row, col,
@@ -82,20 +82,20 @@ class HumanPlayer(Player):
                    (Config.GRID["COLUMNS"] - 1, Config.GRID["COLUMNS"] - 1)]
         edges = [(0, 1), (1, 0), (1, 2), (2, 1)]
 
-        if board.board[center[0]][center[1]] not in [
+        if board.cells[center[0]][center[1]] not in [
                 Config.PLAYERS["HUMAN"], Config.PLAYERS["COMPUTER"]
         ]:
             return center
 
         available_corners = [
-            corner for corner in corners if board.board[corner[0]][corner[1]]
+            corner for corner in corners if board.cells[corner[0]][corner[1]]
             not in [Config.PLAYERS["HUMAN"], Config.PLAYERS["COMPUTER"]]
         ]
         if available_corners:
             return random.choice(available_corners)
 
         available_edges = [
-            edge for edge in edges if board.board[edge[0]][edge[1]] not in
+            edge for edge in edges if board.cells[edge[0]][edge[1]] not in
             [Config.PLAYERS["HUMAN"], Config.PLAYERS["COMPUTER"]]
         ]
         if available_edges:
@@ -120,7 +120,7 @@ class HumanPlayer(Player):
 
             move = int(move) - 1
             row, column = divmod(move, Config.GRID["COLUMNS"])
-            if isinstance(board.board[row][column], str):
+            if isinstance(board.cells[row][column], str):
                 print(Config.MESSAGES["FIELD_OCCUPIED"])
                 is_valid_move = False
                 continue
